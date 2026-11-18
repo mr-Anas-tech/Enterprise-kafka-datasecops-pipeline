@@ -15,8 +15,7 @@ terraform {
 }
 
 provider "snowflake" {
-    organization_name = var.snowflake_org_name
-    account_name = var.snowflake_acc_name
+    account = "${var.snowflake_org_name}-${var.snowflake_acc_name}"
     user = var.snowflake_user
     password = var.snowflake_password
     role = "SYSADMIN"
