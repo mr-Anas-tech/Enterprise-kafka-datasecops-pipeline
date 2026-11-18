@@ -1,7 +1,7 @@
 resource "snowflake_warehouse" "secops_wh" {
     name                = "SECOPS_WH"
     warehouse_size      = "X-SMALL"
-    auto-suspend        = 300
+    auto_suspend        = 300
     initially_suspended = true
 }
 
