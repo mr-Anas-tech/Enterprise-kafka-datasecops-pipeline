@@ -2,7 +2,7 @@ terraform {
     cloud{
         organization = "mr-Anas"
         workspaces {
-            name = secops-snowflake-workspace"
+            name = "secops-snowflake-workspace"
         }
     }
 
