@@ -26,7 +26,7 @@ def get_kafka_config() -> dict[str, Any]:
         "sasl.mechanisms": "PLAIN",
         "sasl.username": get_secret_value("kafka-api-key", "KAFKA_API_KEY"),
         "sasl.password": get_secret_value("kafka-api-secret", "KAFKA_API_SECRET"),
-        "group.id": "secops-snowflake-loader-v1",
+        "group.id": "secops-snowflake-loader-prod",
         "auto.offset.reset": "earliest",
         "enable.auto.commit": False,
     }
@@ -135,7 +135,6 @@ def load_to_snowflake(
         cursor.executemany(insert_sql, rows)
         conn.commit()
 
-        # Commit Kafka offsets only AFTER Snowflake transaction succeeds
         consumer.commit(asynchronous=False)
         logger.info(f"Loaded {len(records)} records into {full_table} and committed Kafka offsets.")
         return len(records)
