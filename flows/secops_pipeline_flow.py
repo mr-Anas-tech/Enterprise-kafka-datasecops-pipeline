@@ -52,10 +52,13 @@ def consume_kafka_batch(
             if msg is None:
                 empty_polls += 1
                 continue
+
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
                     continue
                 raise RuntimeError(f"Kafka error: {msg.error()}")
+
+            empty_polls = 0
 
             try:
                 payload = json.loads(msg.value().decode("utf-8"))
@@ -63,7 +66,6 @@ def consume_kafka_batch(
                 payload["_kafka_offset"] = msg.offset()
                 payload["_kafka_ingested_at_utc"] = datetime.now(timezone.utc).isoformat()
                 records.append(payload)
-
             except (json.JSONDecodeError, UnicodeDecodeError) as err:
                 logger.warning(f"Skipping malformed message at offset {msg.offset()}: {err}")
 
@@ -86,7 +88,7 @@ def get_snowflake_config() -> dict[str, str]:
     }
 
 
-@task(name="load-secops-logs-to-snowflake", retries=2, retry_delay_seconds=5)
+@task(name="load-secops-logs-to-snowflake")
 def load_to_snowflake(
     records: list[dict[str, Any]],
     consumer: Consumer,
@@ -127,7 +129,7 @@ def load_to_snowflake(
 
         insert_sql = f"""
             INSERT INTO {full_table} (RAW_PAYLOAD)
-            SELECT PARSE_JSON(%s)
+            VALUES (PARSE_JSON(%s))
         """
         rows = [(json.dumps(record),) for record in records]
         cursor.executemany(insert_sql, rows)
