@@ -3,7 +3,7 @@ import logging
 import os
 from datetime import datetime, timezone
 from typing import Any
-
+from prefect.cache_policies import NO_CACHE
 from confluent_kafka import Consumer, KafkaError
 from prefect import flow, get_run_logger, task
 from prefect.blocks.system import Secret
@@ -88,7 +88,7 @@ def get_snowflake_config() -> dict[str, str]:
     }
 
 
-@task(name="load-secops-logs-to-snowflake")
+@task(name="load-secops-logs-to-snowflake", cache_policy=NO_CACHE)
 def load_to_snowflake(
     records: list[dict[str, Any]],
     consumer: Consumer,
