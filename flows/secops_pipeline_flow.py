@@ -35,7 +35,7 @@ def get_kafka_config() -> dict[str, Any]:
 @task(name="consume_kafka_secops", retries=2, retry_delay_seconds=5)
 def consume_kafka_batch(
     topic: str = "secops_networks_logs",
-    max_messages: int = 5000,
+    max_messages: int = 10000,
     poll_timeout: float = 2.0,
 ) -> tuple[list[dict[str, Any]], Consumer]:
     """Pull a micro-batch of SecOps JSON events from Confluent Cloud Kafka."""
