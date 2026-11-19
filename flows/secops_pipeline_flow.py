@@ -129,12 +129,14 @@ def load_to_snowflake(
 
         insert_sql = f"""
             INSERT INTO {full_table} (RAW_PAYLOAD)
-            VALUES (PARSE_JSON(%s))
+            SELECT PARSE_JSON(column1)
+            FROM VALUES (%s)
         """
         rows = [(json.dumps(record),) for record in records]
         cursor.executemany(insert_sql, rows)
         conn.commit()
 
+        # Commit Kafka offsets only AFTER Snowflake transaction succeeds
         consumer.commit(asynchronous=False)
         logger.info(f"Loaded {len(records)} records into {full_table} and committed Kafka offsets.")
         return len(records)
