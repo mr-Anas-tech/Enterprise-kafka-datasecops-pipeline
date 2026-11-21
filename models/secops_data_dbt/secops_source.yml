@@ -1,0 +1,6 @@
+sources:
+  - name: secops_raw
+    database: SECOPPS_DB
+    schema: RAW
+    tables:
+      - name: secops_network_logs_raw
