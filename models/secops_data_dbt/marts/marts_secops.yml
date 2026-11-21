@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: marts_secops_hourly_traffic_summary
+    description: "Hourly aggregated SecOps network traffic and health metrics."
+    columns:
+      - name: event_date
+        tests:
+          - not_null
+      - name: event_hour
+        tests:
+          - unique
+          - not_null
+      - name: total_events
+        tests:
+          - not_null
+      - name: unique_source_ips
+        tests:
+          - not_null
+
+  - name: marts_secops_ip_threat_profile
+    description: "IP-level behavioral and security threat profile."
+    columns:
+      - name: source_ip
+        tests:
+          - not_null
+      - name: total_requests
+        tests:
+          - not_null
+      - name: failed_login_attempts_count
+        tests:
+          - not_null
+
+  - name: marts_secops_minutes_anomaly_faetures
+    description: "Minute-level feature store with rolling baselines and spike ratios for ML anomaly detection."
+    columns:
+      - name: minute_ts
+        tests:
+          - unique
+          - not_null
+      - name: event_date
+        tests:
+          - not_null
+      - name: total_events
+        tests:
+          - not_null
+      - name: rolling_15m_avg_events
+        tests:
+          - not_null
+      - name: traffic_spike_ratio
+        tests:
+          - not_null
+      - name: traffic_z_score
+        tests:
+          - not_null
