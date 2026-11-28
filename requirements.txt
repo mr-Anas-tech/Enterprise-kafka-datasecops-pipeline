@@ -1,0 +1,8 @@
+streamlit
+pandas
+numpy
+plotly
+requests
+snowflake-connector-python
+scikit-learn
+python-pptx
